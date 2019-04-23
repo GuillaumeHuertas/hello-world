@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<TITLE>Voici une page contenant du Javascript</TITLE>
+<META charset="UTF-8" />
+</HEAD>
+<BODY>
+	<input type="button" value="Le Bouton HTML" onClick="loadLaFonction()" />
+	<input type="text" id="nem" />
+
+	<SCRIPT language="Javascript">
+		function loadLaFonction() {
+			// Mettre son adresse ip en dur pour éviter les souci si un extérieur se connecte
+			var url = "http://192.168.206.28:8090/api/v1/formations/"
+					+ document.getElementById("nem").value; // URL du serveur HTTP
+			var courses = {};
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("GET", url, true);
+			xmlhttp.onreadystatechange = function() { // fonction anonyme callback : code appelé quand la réponse du serveur est arrivée
+
+				var test = parseInt(document.getElementById("nem").value);
+
+				if (test != "number") {
+					document.getElementById("show").innerHTML = "Tu n'as pas écris un nombre"
+				}
+
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) { // les deux conditions quand tout se passe bien
+					courses = JSON.parse(xmlhttp.responseText); // conversion JSON vers un Objet JavaScript
+					console.log(courses);
+					document.getElementById("show").innerHTML = courses.id;
+					document.getElementById("mustgoon").innerHTML = courses.theme;
+
+				} else if (typeof document.getElementById("nem").value != 'string') {
+					document.getElementById("show").innerHTML = "Tu n'as pas écris un nombre"
+
+				} else {
+					document.getElementById("show").innerHTML = "ERREUR ! "
+					document.getElementById("mustgoon").innerHTML = "La référence n'existe pas !";
+				}
+
+			};
+			if (confirm("Voulez-vous lancer la recherche ?"))
+				xmlhttp.send(null); // appel de la requête HTTP en mode asynchrone
+		}
+	</SCRIPT>
+	<style type="text/css">
+#show {
+	background-color: lightgreen;
+	color: white;
+	border: solid black 2px;
+	border-radius: 10px;
+}
+
+#mustgoon {
+	background-color: lightblue;
+	color: white;
+	border-radius: 10px;
+	border: solid black 2px;
+}
+</style>
+
+	<b><div id="show" style="font-size: 45px; font-weight: 800;"></div></b>
+	<i><div id="mustgoon" style="font-size: 35px; font-weight: 800;"></div></i>
+</BODY>
+</HTML>
